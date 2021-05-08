@@ -59,7 +59,6 @@ public class And extends BinaryExpression implements Expression{
      * @throws Exception
      */
     public Boolean evaluate(Map<String, Boolean> assignment) throws Exception {
-        System.out.println(right.evaluate(assignment));
         try {
             return (left.evaluate(assignment) && right.evaluate(assignment));
         }
@@ -75,7 +74,14 @@ public class And extends BinaryExpression implements Expression{
      * @throws Exception
      */
     public Boolean evaluate() throws Exception {
-        throw new RuntimeException();
+        try {
+            left.evaluate();
+            right.evaluate();
+            return (left.evaluate() && right.evaluate());
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

@@ -38,6 +38,7 @@ public class Var implements Expression{
      * @throws Exception
      */
     public Boolean evaluate(Map<String, Boolean> assignment) throws Exception {
+        System.out.println("asdasdasd");
          if(assignment.get(this.variable) != null) {
              return assignment.get(this.variable);
          }
