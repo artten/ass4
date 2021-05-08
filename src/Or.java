@@ -5,5 +5,5 @@
 /**
  *
  */
-public class OR {
+public class Or {
 }

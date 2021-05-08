@@ -1,4 +1,5 @@
-import java.awt.*;
+import java.util.List;
+
 import java.util.Map;
 
 /**
@@ -28,5 +29,5 @@ public interface Expression {
     // Returns a new expression in which all occurrences of the variable
     // var are replaced with the provided expression (Does not modify the
     // current expression).
-    Expression assign(String var, Expression expression)
+    Expression assign(String var, Expression expression);
 }
