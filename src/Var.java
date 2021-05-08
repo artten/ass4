@@ -38,7 +38,6 @@ public class Var implements Expression{
      * @throws Exception
      */
     public Boolean evaluate(Map<String, Boolean> assignment) throws Exception {
-        System.out.println("asdasdasd");
          if(assignment.get(this.variable) != null) {
              return assignment.get(this.variable);
          }
@@ -61,6 +60,7 @@ public class Var implements Expression{
      */
     public List<String> getVariables() {
         List<String> list = new LinkedList<String>();
+        list.add(this.variable);
         return list;
     }
 
@@ -70,7 +70,6 @@ public class Var implements Expression{
      */
     @Override
     public String toString() {
-        // super();
         return this.variable;
     }
 

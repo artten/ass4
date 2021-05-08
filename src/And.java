@@ -8,11 +8,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * and expression
+ * and expression.
  */
 public class And extends BinaryExpression implements Expression{
     private Expression left;
     private Expression right;
+    private String symbol = "&";
 
     /**
      * constructor.
@@ -20,16 +21,16 @@ public class And extends BinaryExpression implements Expression{
      * @param right - right side of the expression
      */
     And(Expression left, Expression right) {
-        this.left = left;
         this.right = right;
+        this.left = left;
     }
 
     /**
      * constructor.
      */
     And() {
-        this.left = null;
         this.right = null;
+        this.left = null;
     }
 
     /**
@@ -60,6 +61,8 @@ public class And extends BinaryExpression implements Expression{
      */
     public Boolean evaluate(Map<String, Boolean> assignment) throws Exception {
         try {
+            left.evaluate(assignment);
+            right.evaluate(assignment);
             return (left.evaluate(assignment) && right.evaluate(assignment));
         }
         catch (Exception e) {
@@ -90,13 +93,17 @@ public class And extends BinaryExpression implements Expression{
      */
     public List<String> getVariables() {
         List<String> list = new LinkedList<String>();
-        List<String> leftList = (List<String>) this.left.getVariables();
-        List<String> rightList = (List<String>) this.right.getVariables();
+        List<String> leftList = this.left.getVariables();
+        List<String> rightList = this.right.getVariables();
         for (String variable : leftList) {
-            list.add(variable);
+            if (!list.contains(variable)) {
+                list.add(variable);
+            }
         }
         for (String variable : rightList) {
-            list.add(variable);
+            if (!list.contains(variable)) {
+                list.add(variable);
+            }
         }
         return list;
     }
@@ -105,10 +112,8 @@ public class And extends BinaryExpression implements Expression{
      * Returns a nice string representation of the expression.
      * @return expression as string
      */
-    @Override
     public String toString() {
-        // super();
-        return "(" + left.toString() + " & " + right.toString() + ")";
+        return "(" + left.toString() + symbol + right.toString() + ")";
     }
 
     /**
