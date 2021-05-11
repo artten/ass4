@@ -8,7 +8,7 @@ public class main {
         Val val2 = new Val(true);
         Var var = new Var("x");
         Var var2 = new Var("y");
-        And and = new And(val2, var);
+        Xor and = new Xor(val2, var);
         And and2 = new And(and, var2);
         And and3 = new And(and2, and);
         And and4 = new And(val,and3);
@@ -16,7 +16,7 @@ public class main {
         m.put("y",true);
         m.put("x",true);
         try {
-            System.out.println(and.evaluate(m));
+            System.out.println(and);
             List<String> vars = and4.getVariables();
             for (String v : vars) {
                 System.out.println(v);

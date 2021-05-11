@@ -88,27 +88,6 @@ public class Nor extends BinaryExpression implements Expression{
     }
 
     /**
-     * Returns a list of the variables in the expression.
-     * @return
-     */
-    public List<String> getVariables() {
-        List<String> list = new LinkedList<String>();
-        List<String> leftList = this.left.getVariables();
-        List<String> rightList = this.right.getVariables();
-        for (String variable : leftList) {
-            if (!list.contains(variable)) {
-                list.add(variable);
-            }
-        }
-        for (String variable : rightList) {
-            if (!list.contains(variable)) {
-                list.add(variable);
-            }
-        }
-        return list;
-    }
-
-    /**
      * Returns a nice string representation of the expression.
      * @return expression as string
      */
@@ -139,6 +118,23 @@ public class Nor extends BinaryExpression implements Expression{
         else {
             nor.setRightAnd(this.right.assign(var,expression));
         }
+        return nor;
+    }
+
+    /**
+     *  Returns the expression tree resulting from converting all the operations to the logical Nand operation.
+     */
+    public Expression nandify(){
+        Nand nand = new Nand(new Nand(new Nand(this.left, this.left), new Nand(this.right, this.right)),
+                new Nand(new Nand(this.left, this.left), new Nand(this.right, this.right)));
+        return nand;
+    }
+
+    /**
+     * Returns the expression tree resulting from converting all the operations to the logical Nor operation.
+     */
+    public Expression norify(){
+        Nor nor = new Nor(this.left, this.right);
         return nor;
     }
 }

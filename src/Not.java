@@ -71,21 +71,6 @@ public class Not extends  UnaryExpression implements Expression {
     }
 
     /**
-     * Returns a list of the variables in the expression.
-     * @return
-     */
-    public List<String> getVariables() {
-        List<String> list = new LinkedList<String>();
-        List<String> listExpression = this.expression.getVariables();
-        for (String variable : listExpression) {
-            if (!list.contains(variable)) {
-                list.add(variable);
-            }
-        }
-        return list;
-    }
-
-    /**
      * Returns a nice string representation of the expression.
      * @return expression as string
      */
@@ -111,6 +96,22 @@ public class Not extends  UnaryExpression implements Expression {
             not.setExpression(expression);
         }
         return not;
+    }
+
+    /**
+     *  Returns the expression tree resulting from converting all the operations to the logical Nand operation.
+     */
+    public Expression nandify(){
+        Nand nand = new Nand(this.expression, this.expression);
+        return nand;
+    }
+
+    /**
+     * Returns the expression tree resulting from converting all the operations to the logical Nor operation.
+     */
+    public Expression norify(){
+        Nor nor = new Nor(this.expression, this.expression);
+        return nor;
     }
 }
 

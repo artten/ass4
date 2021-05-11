@@ -91,4 +91,20 @@ public class Val implements Expression{
     public Expression assign(String var, Expression expression) {
         return this;
     }
+
+    /**
+     *  Returns the expression tree resulting from converting all the operations to the logical Nand operation.
+     */
+    public Expression nandify(){
+        Nand nand = new Nand();
+        return nand;
+    }
+
+    /**
+     * Returns the expression tree resulting from converting all the operations to the logical Nor operation.
+     */
+    public Expression norify(){
+        Nor nor = new Nor();
+        return nor;
+    }
 }

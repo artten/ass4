@@ -119,4 +119,14 @@ abstract class BinaryExpression extends BasicExpression implements Expression{
         }
         return and;
     }
+
+    /**
+     *  Returns the expression tree resulting from converting all the operations to the logical Nand operation.
+     */
+    abstract public Expression nandify();
+
+    /**
+     * Returns the expression tree resulting from converting all the operations to the logical Nor operation.
+     */
+    abstract public Expression norify();
 }
