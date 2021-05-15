@@ -68,4 +68,9 @@ abstract class BasicExpression implements Expression{
      * Returns the expression tree resulting from converting all the operations to the logical Nor operation.
      */
     abstract public Expression norify();
+
+    /**
+     * Returned a simplified version of the current expression.
+     */
+    abstract public Expression simplify();
 }

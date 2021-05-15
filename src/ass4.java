@@ -29,9 +29,9 @@ public class ass4 {
             System.out.println(i + ":\n");
             System.out.println(e + "\n");
             System.out.println(e.nandify() + "\n");
-            //System.out.println(e.nandify().simplify() + "\n");
+            System.out.println(e.nandify().simplify() + "\n");
             System.out.println(e.norify() + "\n");
-            //System.out.println(e.norify().simplify() + "\n");
+            System.out.println(e.norify().simplify() + "\n");
             Expression tmp = e.assign("x", new Xnor(z, new Val(false)));
             System.out.println(tmp + "\n");
             try {

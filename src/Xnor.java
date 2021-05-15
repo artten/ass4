@@ -136,4 +136,19 @@ public class Xnor extends BinaryExpression implements Expression{
         Nor nor = new Nor(new Nor(this.left, new Nor(this.left, this.right)),new Nor(this.right, new Nor(this.left, this.right)));
         return nor;
     }
+
+    public Expression simplify() {
+        And and = new And();
+        Expression exLeft = this.left.simplify();
+        Expression exRight = this.right.simplify();
+        try {
+            if(this.equals()) {
+                return  new Val(true);
+            }
+        }
+        catch (Exception e) {
+            return this;
+        }
+        return and;
+    }
 }

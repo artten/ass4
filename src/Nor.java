@@ -137,4 +137,39 @@ public class Nor extends BinaryExpression implements Expression{
         Nor nor = new Nor(this.left, this.right);
         return nor;
     }
+
+    public Expression simplify() {
+        And and = new And();
+        Expression exLeft = this.left.simplify();
+        Expression exRight = this.right.simplify();
+        try {
+            if(exLeft.evaluate() == false) {
+                return new Not(this.right);
+            }
+        }
+        catch (Exception e) {
+            try {
+                if(exRight.evaluate() == false) {
+                    return new Not(left);
+                }
+                if(exRight.evaluate() == true) {
+                    return new Val(false);
+                }
+            }
+            catch (Exception e2) {
+                if (this.equals()) {
+                    return new Not(this.left);
+                }
+                return this;
+            }
+        }
+        try {
+            if(exLeft.evaluate() == true) {
+                return new Val(false);
+            }
+        }
+        catch (Exception e) { }
+
+        return and;
+    }
 }

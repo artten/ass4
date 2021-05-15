@@ -6,6 +6,8 @@
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 /**
  * and expression.
@@ -129,4 +131,54 @@ abstract class BinaryExpression extends BasicExpression implements Expression{
      * Returns the expression tree resulting from converting all the operations to the logical Nor operation.
      */
     abstract public Expression norify();
+
+    /**
+     * Returned a simplified version of the current expression.
+     */
+    abstract public Expression simplify();
+
+    /**
+     * compare the left side and the right side.
+     * @return true if left side equals to the right side else false
+     */
+    public boolean equals() {
+        List<String> leftList = this.left.getVariables().stream().sorted().collect(Collectors.toList());
+        List<String> rightList = this.right.getVariables().stream().sorted().collect(Collectors.toList());
+        if (leftList.size() != rightList.size() || leftList.equals(rightList)) {
+            return false;
+        }
+        int putTrue = 0;
+        for (int i = 0; i < Math.pow(2,leftList.size()) ; i++ ) {
+            Map<String, Boolean> map = new TreeMap<String, Boolean>();
+            if (i == Math.pow(2,leftList.size()) - 1) {
+                for (String ver : leftList) {
+                    map.put(ver, false);
+                }
+            }
+            int numberOfTrue = i / leftList.size() + 1;
+            int putTruePlus = numberOfTrue;
+            int j = 0;
+            for(String string : leftList) {
+                if (numberOfTrue > 0 && j == putTrue) {
+                    numberOfTrue--;
+                    map.put(string, true);
+                    putTrue = (putTrue + putTruePlus) % leftList.size();
+                }
+                else {
+                    map.put(string, false);
+                }
+                j++;
+            }
+            try {
+                if (this.right.evaluate(map) != this.right.evaluate(map)) {
+                    return false;
+                }
+            }
+            catch (Exception ex) {
+
+            }
+
+        }
+        return true;
+    }
 }

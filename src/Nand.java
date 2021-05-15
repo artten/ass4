@@ -137,4 +137,48 @@ public class Nand extends BinaryExpression implements Expression{
                 new Nor(new Nor(this.left, this.left), new Nor(this.right, this.right)));
         return nor;
     }
+
+    /**
+     * Returned a simplified version of the current expression.
+     * @return a simplified version of the current expression.
+     */
+    public Expression simplify() {
+        And and = new And();
+        Expression exLeft = this.left.simplify();
+        Expression exRight = this.right.simplify();
+        try {
+            if(exLeft.evaluate() == false) {
+                return new Val(true);
+            }
+        }
+        catch (Exception e) {
+            try {
+                if(exRight.evaluate() == false) {
+                    return new Val(true);
+                }
+                if(exRight.evaluate() == true) {
+                    return new Not(exLeft);
+                }
+            }
+            catch (Exception e2) {
+                if (this.equals()) {
+                    return new Not(this.left);
+                }
+                return this;
+            }
+        }
+        try {
+            if(exRight.evaluate() == false) {
+                return new Val(true);
+            }
+            if(exRight.evaluate() == true) {
+                return new Val(false);
+            }
+        }
+        catch (Exception e) {
+            return new Not(exRight);
+        }
+
+        return and;
+    }
 }

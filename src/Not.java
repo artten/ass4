@@ -113,6 +113,14 @@ public class Not extends  UnaryExpression implements Expression {
         Nor nor = new Nor(this.expression, this.expression);
         return nor;
     }
+
+    /**
+     * Returned a simplified version of the current expression.
+     * @return a simplified version of the current expression.
+     */
+    public Expression simplify() {
+        return this;
+    }
 }
 
 
