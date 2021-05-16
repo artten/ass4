@@ -3,7 +3,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class ass4 {
+public class ExpressionsTest {
     public static void main(String[] args) {
         List<Expression> expressions = new ArrayList<>();
         Var x = new Var("x");
