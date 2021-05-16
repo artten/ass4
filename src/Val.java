@@ -96,16 +96,14 @@ public class Val implements Expression{
      *  Returns the expression tree resulting from converting all the operations to the logical Nand operation.
      */
     public Expression nandify(){
-        Nand nand = new Nand();
-        return nand;
+        return this;
     }
 
     /**
      * Returns the expression tree resulting from converting all the operations to the logical Nor operation.
      */
     public Expression norify(){
-        Nor nor = new Nor();
-        return nor;
+        return  this;
     }
 
     /**

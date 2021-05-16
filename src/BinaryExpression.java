@@ -13,18 +13,19 @@ import java.util.stream.Collectors;
  * and expression.
  */
 abstract class BinaryExpression extends BasicExpression implements Expression{
-    private Expression left;
-    private Expression right;
-    private String symbol;
+    protected Expression left;
+    protected Expression right;
+    protected String symbol;
 
     /**
      * constructor.
      * @param left - left side of the expression
      * @param right - right side of the expression
      */
-    BinaryExpression (Expression left, Expression right) {
+    BinaryExpression (Expression left, Expression right, String symbol) {
         this.left = left;
         this.right = right;
+        this.symbol = symbol;
     }
 
     /**
@@ -49,6 +50,14 @@ abstract class BinaryExpression extends BasicExpression implements Expression{
      */
     public void setLeftAnd(Expression left) {
         this.left = left;
+    }
+
+    /**
+     * sets the symbol.
+     * @param symbol
+     */
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
     }
 
     /**
@@ -77,8 +86,8 @@ abstract class BinaryExpression extends BasicExpression implements Expression{
      */
     public List<String> getVariables() {
         List<String> list = new LinkedList<String>();
-        List<String> leftList = (List<String>) this.left.getVariables();
-        List<String> rightList = (List<String>) this.right.getVariables();
+        List<String> leftList = left.getVariables();
+        List<String> rightList = right.getVariables();
         for (String variable : leftList) {
             list.add(variable);
         }
@@ -92,7 +101,6 @@ abstract class BinaryExpression extends BasicExpression implements Expression{
      * Returns a nice string representation of the expression.
      * @return expression as string
      */
-    @Override
     public String toString() {
         return "(" + left.toString() + symbol + right.toString() + ")";
     }
@@ -141,20 +149,21 @@ abstract class BinaryExpression extends BasicExpression implements Expression{
      * compare the left side and the right side.
      * @return true if left side equals to the right side else false
      */
-    public boolean equals() {
-        List<String> leftList = this.left.getVariables().stream().sorted().collect(Collectors.toList());
-        List<String> rightList = this.right.getVariables().stream().sorted().collect(Collectors.toList());
-        if (leftList.size() != rightList.size() || leftList.equals(rightList)) {
+    public boolean equals(Expression left,Expression right) {
+        List<String> leftList = left.getVariables().stream().sorted().collect(Collectors.toList());
+        List<String> rightList = right.getVariables().stream().sorted().collect(Collectors.toList());
+        if (leftList.size() != rightList.size() || !(leftList.equals(rightList))) {
             return false;
+        }
+        if (leftList.size() == 1 ) {
+            if ( leftList.get(0) != rightList.get(0)) {
+                return false;
+            }
+            return true;
         }
         int putTrue = 0;
         for (int i = 0; i < Math.pow(2,leftList.size()) ; i++ ) {
             Map<String, Boolean> map = new TreeMap<String, Boolean>();
-            if (i == Math.pow(2,leftList.size()) - 1) {
-                for (String ver : leftList) {
-                    map.put(ver, false);
-                }
-            }
             int numberOfTrue = i / leftList.size() + 1;
             int putTruePlus = numberOfTrue;
             int j = 0;
@@ -168,9 +177,18 @@ abstract class BinaryExpression extends BasicExpression implements Expression{
                     map.put(string, false);
                 }
                 j++;
+               // System.out.println( "i:"+i);
+               // System.out.println( numberOfTrue);
+               // System.out.println(map);
+                //System.out.println(leftList);
+            }
+            if (i == Math.pow(2,leftList.size()) - 1) {
+                for (String ver : leftList) {
+                    map.put(ver, false);
+                }
             }
             try {
-                if (this.right.evaluate(map) != this.right.evaluate(map)) {
+                if (right.evaluate(map) != left.evaluate(map)) {
                     return false;
                 }
             }

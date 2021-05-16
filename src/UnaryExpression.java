@@ -11,15 +11,16 @@ import java.util.Map;
  * and expression.
  */
 abstract class UnaryExpression extends BasicExpression implements Expression{
-    private Expression expression;
-    private String symbol;
+    protected Expression expression;
+    protected String symbol;
 
     /**
      * constructor.
      * @param expression - the value inside the expression
      */
-    UnaryExpression (Expression expression) {
+    UnaryExpression (Expression expression, String symbol) {
         this.expression = expression;
+        this.symbol = symbol;
     }
 
     /**
@@ -29,8 +30,20 @@ abstract class UnaryExpression extends BasicExpression implements Expression{
         this.expression = null;
     }
 
+    /**
+     * sets the expression
+     * @param expression
+     */
     public void setExpression(Expression expression) {
         this.expression = expression;
+    }
+
+    /**
+     * sets the symbol.
+     * @param symbol
+     */
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
     }
 
     /**
@@ -75,7 +88,7 @@ abstract class UnaryExpression extends BasicExpression implements Expression{
      */
     public List<String> getVariables() {
         List<String> list = new LinkedList<String>();
-        List<String> listExpression = this.expression.getVariables();
+        List<String> listExpression = expression.getVariables();
         for (String variable : listExpression) {
             if (!list.contains(variable)) {
                 list.add(variable);

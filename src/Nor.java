@@ -11,9 +11,6 @@ import java.util.Map;
  * and expression.
  */
 public class Nor extends BinaryExpression implements Expression{
-    private Expression left;
-    private Expression right;
-    private String symbol = "|";
 
     /**
      * constructor.
@@ -21,16 +18,14 @@ public class Nor extends BinaryExpression implements Expression{
      * @param right - right side of the expression
      */
     Nor(Expression left, Expression right) {
-        this.left = left;
-        this.right = right;
+        super(left, right, " ↓ ");
     }
 
     /**
      * constructor.
      */
     Nor() {
-        this.left = null;
-        this.right = null;
+        super();
     }
 
     /**
@@ -38,7 +33,7 @@ public class Nor extends BinaryExpression implements Expression{
      * @param right
      */
     public void setRightAnd(Expression right) {
-        this.right = right;
+        super.setRightAnd(right);
     }
 
     /**
@@ -46,7 +41,7 @@ public class Nor extends BinaryExpression implements Expression{
      * @param left
      */
     public void setLeftAnd(Expression left) {
-        this.left = left;
+        super.setLeftAnd(left);
     }
 
     /**
@@ -61,9 +56,9 @@ public class Nor extends BinaryExpression implements Expression{
      */
     public Boolean evaluate(Map<String, Boolean> assignment) throws Exception {
         try {
-            left.evaluate(assignment);
-            right.evaluate(assignment);
-            return (!(left.evaluate(assignment) || right.evaluate(assignment)));
+            super.left.evaluate(assignment);
+            super.right.evaluate(assignment);
+            return (!(super.left.evaluate(assignment) || super.right.evaluate(assignment)));
         }
         catch (Exception e) {
             throw new RuntimeException(e);
@@ -78,9 +73,9 @@ public class Nor extends BinaryExpression implements Expression{
      */
     public Boolean evaluate() throws Exception {
         try {
-            left.evaluate();
-            right.evaluate();
-            return (!(left.evaluate() || right.evaluate()));
+            super.left.evaluate();
+            super.right.evaluate();
+            return (!(super.left.evaluate() || super.right.evaluate()));
         }
         catch (Exception e) {
             throw new RuntimeException(e);
@@ -93,7 +88,7 @@ public class Nor extends BinaryExpression implements Expression{
      */
     @Override
     public String toString() {
-        return "(" + left.toString() + symbol + right.toString() + ")";
+        return super.toString();
     }
 
     /**
@@ -106,27 +101,38 @@ public class Nor extends BinaryExpression implements Expression{
      */
     public Expression assign(String var, Expression expression) {
         Nor nor = new Nor();
-        if ( this.left.toString().equals(var) ) {
+        nor.setSymbol(" ↓ ");
+        if (super.left.toString().equals(var) ) {
             nor.setLeftAnd(expression);
         }
         else {
-            nor.setLeftAnd(this.left.assign(var,expression));
+            nor.setLeftAnd(super.left.assign(var,expression));
         }
-        if ( this.right.toString().equals(var) ) {
+        if ( super.right.toString().equals(var) ) {
             nor.setRightAnd(expression);
         }
         else {
-            nor.setRightAnd(this.right.assign(var,expression));
+            nor.setRightAnd(super.right.assign(var,expression));
         }
         return nor;
+    }
+
+    /**
+     * Returns a list of the variables in the expression.
+     * @return
+     */
+    public List<String> getVariables() {
+        return super.getVariables();
     }
 
     /**
      *  Returns the expression tree resulting from converting all the operations to the logical Nand operation.
      */
     public Expression nandify(){
-        Nand nand = new Nand(new Nand(new Nand(this.left, this.left), new Nand(this.right, this.right)),
-                new Nand(new Nand(this.left, this.left), new Nand(this.right, this.right)));
+        Expression leftNand = super.left.nandify();
+        Expression rightNand = super.right.nandify();
+        Nand nand = new Nand(new Nand(new Nand(leftNand, leftNand), new Nand(rightNand, rightNand)),
+                new Nand(new Nand(leftNand, leftNand), new Nand(rightNand, rightNand)));
         return nand;
     }
 
@@ -134,33 +140,35 @@ public class Nor extends BinaryExpression implements Expression{
      * Returns the expression tree resulting from converting all the operations to the logical Nor operation.
      */
     public Expression norify(){
-        Nor nor = new Nor(this.left, this.right);
+        Expression leftNand = super.left.norify();
+        Expression rightNand = super.right.norify();
+        Nor nor = new Nor(leftNand, rightNand);
         return nor;
     }
 
     public Expression simplify() {
         And and = new And();
-        Expression exLeft = this.left.simplify();
-        Expression exRight = this.right.simplify();
+        Expression exLeft = super.left.simplify();
+        Expression exRight = super.right.simplify();
         try {
             if(exLeft.evaluate() == false) {
-                return new Not(this.right);
+                return new Not(exRight);
             }
         }
         catch (Exception e) {
             try {
                 if(exRight.evaluate() == false) {
-                    return new Not(left);
+                    return new Not(exLeft);
                 }
                 if(exRight.evaluate() == true) {
                     return new Val(false);
                 }
             }
             catch (Exception e2) {
-                if (this.equals()) {
-                    return new Not(this.left);
+                if (this.equals(exLeft, exRight)) {
+                    return new Not(exLeft);
                 }
-                return this;
+                return new Nor(exLeft, exRight);
             }
         }
         try {

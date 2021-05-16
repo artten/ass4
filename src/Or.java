@@ -11,9 +11,7 @@ import java.util.Map;
  * and expression.
  */
 public class Or extends BinaryExpression implements Expression{
-    private Expression left;
-    private Expression right;
-    private String symbol = "|";
+    private String symbol = " | ";
 
     /**
      * constructor.
@@ -21,16 +19,14 @@ public class Or extends BinaryExpression implements Expression{
      * @param right - right side of the expression
      */
     Or(Expression left, Expression right) {
-        this.left = left;
-        this.right = right;
+        super(left, right , " | ");
     }
 
     /**
      * constructor.
      */
     Or() {
-        this.left = null;
-        this.right = null;
+        super();
     }
 
     /**
@@ -38,7 +34,7 @@ public class Or extends BinaryExpression implements Expression{
      * @param right
      */
     public void setRightOr(Expression right) {
-        this.right = right;
+        super.setRightAnd(right);
     }
 
     /**
@@ -46,7 +42,7 @@ public class Or extends BinaryExpression implements Expression{
      * @param left
      */
     public void setLeftOr(Expression left) {
-        this.left = left;
+        super.setLeftAnd(left);
     }
 
     /**
@@ -88,12 +84,20 @@ public class Or extends BinaryExpression implements Expression{
     }
 
     /**
+     * Returns a list of the variables in the expression.
+     * @return
+     */
+    public List<String> getVariables() {
+        return super.getVariables();
+    }
+
+    /**
      * Returns a nice string representation of the expression.
      * @return expression as string
      */
     @Override
     public String toString() {
-        return "(" + left.toString() + symbol + right.toString() + ")";
+        return super.toString();
     }
 
     /**
@@ -106,17 +110,18 @@ public class Or extends BinaryExpression implements Expression{
      */
     public Expression assign(String var, Expression expression) {
         Or or = new Or();
-        if ( this.left.toString().equals(var) ) {
+        or.setSymbol(" | ");
+        if ( super.left.toString().equals(var) ) {
             or.setLeftOr(expression);
         }
         else {
-            or.setLeftOr(this.left.assign(var,expression));
+            or.setLeftOr(super.left.assign(var,expression));
         }
-        if ( this.right.toString().equals(var) ) {
+        if ( super.right.toString().equals(var) ) {
             or.setRightOr(expression);
         }
         else {
-            or.setRightOr(this.right.assign(var,expression));
+            or.setRightOr(super.right.assign(var,expression));
         }
         return or;
     }
@@ -125,7 +130,9 @@ public class Or extends BinaryExpression implements Expression{
      *  Returns the expression tree resulting from converting all the operations to the logical Nand operation.
      */
     public Expression nandify(){
-        Nand nand = new Nand(new Nand(this.left, this.left), new Nand(this.right, this.right));
+        Expression leftNand = super.left.nandify();
+        Expression rightNand = super.right.nandify();
+        Nand nand = new Nand(new Nand(leftNand, leftNand), new Nand(rightNand , rightNand ));
         return nand;
     }
 
@@ -133,7 +140,9 @@ public class Or extends BinaryExpression implements Expression{
      * Returns the expression tree resulting from converting all the operations to the logical Nor operation.
      */
     public Expression norify(){
-        Nor nor = new Nor(new Nor(this.left, this.right), new Nor(this.left, this.right));
+        Expression leftNand = super.left.norify();
+        Expression rightNand = super.right.norify();
+        Nor nor = new Nor(new Nor(leftNand, rightNand), new Nor(leftNand, rightNand));
         return nor;
     }
 
@@ -143,8 +152,8 @@ public class Or extends BinaryExpression implements Expression{
      */
     public Expression simplify() {
         And and = new And();
-        Expression exLeft = this.left.simplify();
-        Expression exRight = this.right.simplify();
+        Expression exLeft = super.left.simplify();
+        Expression exRight = super.right.simplify();
         try {
             if(exLeft.evaluate() == true) {
                 return new Val(true);
@@ -160,10 +169,10 @@ public class Or extends BinaryExpression implements Expression{
                 }
             }
             catch (Exception e2) {
-                if (this.equals()) {
-                    return this.right;
+                if (this.equals(exLeft, exRight)) {
+                    return super.right;
                 }
-                return this;
+                return new Or(exLeft, exRight);
             }
         }
         try {

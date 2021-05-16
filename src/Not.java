@@ -10,28 +10,23 @@ import java.util.Map;
  *
  */
 public class Not extends  UnaryExpression implements Expression {
-    private Expression expression;
-    private String symbol = "~";
-
-
-
     /**
      * constructor.
      * @param expression - the expression to add
      */
     Not(Expression expression) {
-        this.expression = expression;
+        super(expression, "~");
     }
 
     /**
      * constructor.
      */
     Not() {
-        this.expression = null;
+        super();
     }
 
     public void setExpression(Expression expression) {
-        this.expression = expression;
+        super.expression = expression;
     }
 
     /**
@@ -46,8 +41,8 @@ public class Not extends  UnaryExpression implements Expression {
      */
     public Boolean evaluate(Map<String, Boolean> assignment) throws Exception {
         try {
-            expression.evaluate(assignment);
-            return !(expression.evaluate(assignment));
+            super.expression.evaluate(assignment);
+            return !(super.expression.evaluate(assignment));
         }
         catch (Exception e) {
             throw new RuntimeException(e);
@@ -62,12 +57,16 @@ public class Not extends  UnaryExpression implements Expression {
      */
     public Boolean evaluate() throws Exception {
         try {
-            expression.evaluate();
-            return !(expression.evaluate());
+            super.expression.evaluate();
+            return !(super.expression.evaluate());
         }
         catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public List<String> getVariables() {
+        return super.getVariables();
     }
 
     /**
@@ -88,12 +87,13 @@ public class Not extends  UnaryExpression implements Expression {
      * @return
      */
     public Expression assign(String var, Expression expression) {
-       Not not = new Not();
-        if ( this.expression.toString().equals(var) ) {
+        Not not = new Not();
+        not.setSymbol("~");
+        if (super.expression.toString().equals(var) ) {
             not.setExpression(expression);
         }
         else {
-            not.setExpression(expression);
+            not.setExpression(super.expression.assign(var, expression));
         }
         return not;
     }
@@ -102,7 +102,7 @@ public class Not extends  UnaryExpression implements Expression {
      *  Returns the expression tree resulting from converting all the operations to the logical Nand operation.
      */
     public Expression nandify(){
-        Nand nand = new Nand(this.expression, this.expression);
+        Nand nand = new Nand(super.expression.nandify(), super.expression.nandify());
         return nand;
     }
 
@@ -110,7 +110,7 @@ public class Not extends  UnaryExpression implements Expression {
      * Returns the expression tree resulting from converting all the operations to the logical Nor operation.
      */
     public Expression norify(){
-        Nor nor = new Nor(this.expression, this.expression);
+        Nor nor = new Nor(super.expression.norify(), super.expression.norify());
         return nor;
     }
 
@@ -119,7 +119,7 @@ public class Not extends  UnaryExpression implements Expression {
      * @return a simplified version of the current expression.
      */
     public Expression simplify() {
-        return this;
+        return new Not(super.expression.simplify());
     }
 }
 
